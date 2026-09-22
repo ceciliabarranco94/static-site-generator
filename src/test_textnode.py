@@ -1,5 +1,6 @@
 import unittest
 from textnode import TextNode, TextType, text_node_to_html_node
+from inline_markdown import text_to_textnodes
 
 
 class TestTextNode(unittest.TestCase):
@@ -28,6 +29,25 @@ class TestTextNode(unittest.TestCase):
         html_node = text_node_to_html_node(node)
         self.assertEqual(html_node.tag, None)
         self.assertEqual(html_node.value, "This is a text node")
+
+    def test_text_to_textnodes_mixed_markup(self):
+        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        actual = text_to_textnodes(text)
+
+        expected = [
+            TextNode("This is ", TextType.PLAIN_TEXT),
+            TextNode("text", TextType.BOLD_TEXT),
+            TextNode(" with an ", TextType.PLAIN_TEXT),
+            TextNode("italic", TextType.ITALIC_TEXT),
+            TextNode(" word and a ", TextType.PLAIN_TEXT),
+            TextNode("code block", TextType.CODE_TEXT),
+            TextNode(" and an ", TextType.PLAIN_TEXT),
+            TextNode("obi wan image", TextType.IMAGES_TEXT, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.PLAIN_TEXT),
+            TextNode("link", TextType.LINKS_TEXT, "https://boot.dev"),
+        ]
+
+        self.assertEqual(actual, expected)
 
 
 if __name__ == "__main__":
