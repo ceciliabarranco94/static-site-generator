@@ -91,6 +91,21 @@ def code_to_html_node(block):
 
     return pre_ch
 
+
+#helper fucntion for quotes
+def quote_to_html_node(block):
+    quote_line = block.split("\n")
+    clean_quote = []
+
+    for line in quote_line:
+        clean_quote.append(line.lstrip(">").strip())
+
+    joined_text = " " .join(clean_quote)
+    node_quote = text_to_children(joined_text)
+    quote_ch = HTMLNode("blockquote", None, node_quote)
+
+    return quote_ch
+
         
 
 def markdown_to_html_node(markdown):
@@ -103,7 +118,7 @@ def markdown_to_html_node(markdown):
         elif block_type == BlockType.CODE:
             outer_children.append(code_to_html_node(block))
         elif block_type == BlockType.QUOTE:
-            outer_children.append(HTMLNode(data))
+            outer_children.append(quote_to_html_node(block))
         elif block_type == BlockType.U_LIST:
             outer_children.append(HTMLNode(data))
         elif block_type == BlockType.O_LIST:
