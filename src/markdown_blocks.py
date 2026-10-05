@@ -106,6 +106,22 @@ def quote_to_html_node(block):
 
     return quote_ch
 
+
+#helper fucntion for unordered_list
+def un_list_to_html_node(block):
+    un_list = block.split("\n")
+    clean_list = []
+
+    for line in un_list:
+        list_strip = (line.lstrip("- "))
+        node_ulist = text_to_children(list_strip)
+        ulist_ch = HTMLNode("li", None, node_ulist)
+        clean_list.append(ulist_ch)
+    wrap_ulist = HTMLNode("ul", None, clean_list)
+
+    return wrap_ulist
+
+
         
 
 def markdown_to_html_node(markdown):
@@ -120,7 +136,7 @@ def markdown_to_html_node(markdown):
         elif block_type == BlockType.QUOTE:
             outer_children.append(quote_to_html_node(block))
         elif block_type == BlockType.U_LIST:
-            outer_children.append(HTMLNode(data))
+            outer_children.append(un_list_to_html_node(block))
         elif block_type == BlockType.O_LIST:
             outer_children.append(HTMLNode(data))
         else:
