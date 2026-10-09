@@ -122,6 +122,19 @@ def un_list_to_html_node(block):
     return wrap_ulist
 
 
+#helper fucntion for ordered_list
+def or_list_to_html_node(block):
+    or_list = block.split("\n")
+    clean_list = []
+
+    for line in or_list:
+        list_strip = (line.split(". ", 1))
+        node_olist = text_to_children(list_strip[1])
+        olist_ch = HTMLNode("li", None, node_olist)
+        clean_list.append(olist_ch)
+    wrap_olist = HTMLNode("ol", None, clean_list)
+
+    return wrap_olist
         
 
 def markdown_to_html_node(markdown):
@@ -138,7 +151,7 @@ def markdown_to_html_node(markdown):
         elif block_type == BlockType.U_LIST:
             outer_children.append(un_list_to_html_node(block))
         elif block_type == BlockType.O_LIST:
-            outer_children.append(HTMLNode(data))
+            outer_children.append(or_list_to_html_node(block))
         else:
             paragraph_text = block.replace("\n", " ")
             paragraph_ch = text_to_children(paragraph_text)
