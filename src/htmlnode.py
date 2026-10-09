@@ -49,9 +49,5 @@ class ParentNode(HTMLNode):
         else:
             childs_join = "".join(child.to_html() for child in self.children)
             return  "<" + self.tag + ">" + childs_join + "</" + self.tag + ">"
-            
-    
-        
-    
     
         

@@ -1,5 +1,5 @@
 from enum import Enum
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 from inline_markdown import text_to_textnodes
 from textnode import text_node_to_html_node, TextNode, TextType
 
@@ -77,7 +77,7 @@ def heading_to_html_node(block):
     sliced_text = block[heading_level + 1:]
     heading_ch = text_to_children(sliced_text)
 
-    return HTMLNode(head_string, None, heading_ch)
+    return ParentNode(head_string, heading_ch)
 
 
 #helper function for code
@@ -86,8 +86,8 @@ def code_to_html_node(block):
     plain_code = TextNode(raw_code, TextType.PLAIN_TEXT)
     node_code = text_node_to_html_node(plain_code)
 
-    code_ch = HTMLNode("code", None, [node_code])
-    pre_ch = HTMLNode("pre", None, [code_ch])
+    code_ch = ParentNode("code", [node_code])
+    pre_ch = ParentNode("pre", [code_ch])
 
     return pre_ch
 
@@ -102,7 +102,7 @@ def quote_to_html_node(block):
 
     joined_text = " " .join(clean_quote)
     node_quote = text_to_children(joined_text)
-    quote_ch = HTMLNode("blockquote", None, node_quote)
+    quote_ch = ParentNode("blockquote", node_quote)
 
     return quote_ch
 
@@ -115,9 +115,9 @@ def un_list_to_html_node(block):
     for line in un_list:
         list_strip = (line.lstrip("- "))
         node_ulist = text_to_children(list_strip)
-        ulist_ch = HTMLNode("li", None, node_ulist)
+        ulist_ch = ParentNode("li", node_ulist)
         clean_list.append(ulist_ch)
-    wrap_ulist = HTMLNode("ul", None, clean_list)
+    wrap_ulist = ParentNode("ul", clean_list)
 
     return wrap_ulist
 
@@ -130,9 +130,9 @@ def or_list_to_html_node(block):
     for line in or_list:
         list_strip = (line.split(". ", 1))
         node_olist = text_to_children(list_strip[1])
-        olist_ch = HTMLNode("li", None, node_olist)
+        olist_ch = ParentNode("li", node_olist)
         clean_list.append(olist_ch)
-    wrap_olist = HTMLNode("ol", None, clean_list)
+    wrap_olist = ParentNode("ol", clean_list)
 
     return wrap_olist
         
@@ -155,4 +155,6 @@ def markdown_to_html_node(markdown):
         else:
             paragraph_text = block.replace("\n", " ")
             paragraph_ch = text_to_children(paragraph_text)
-            outer_children.append(HTMLNode("p", None, paragraph_ch))
+            outer_children.append(ParentNode("p", paragraph_ch))
+
+    return ParentNode("div",  outer_children)
