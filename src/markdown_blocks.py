@@ -158,3 +158,12 @@ def markdown_to_html_node(markdown):
             outer_children.append(ParentNode("p", paragraph_ch))
 
     return ParentNode("div",  outer_children)
+
+
+def extract_title(markdown):
+    lines = markdown.split("\n")
+    for line in lines:
+        if line.startswith("# "):
+            line_strip = line[2:]
+            return line_strip.strip()
+    raise Exception("No heading found")
